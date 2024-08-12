@@ -1,0 +1,27 @@
+options:
+  logging: CLOUD_LOGGING_ONLY  # Or specify 'build.logs_bucket' for Cloud Storage logging
+
+
+
+steps:
+  
+
+  # Build the Docker image for the backend service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/ww-sre-demo/backend-image:latest', './backend']
+
+  # Build the Docker image for the frontend service
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/your-project-id/frontend-image:latest', '-f', 'frontend/Dockerfile', 'frontend']
+
+  # Push the Docker image for the frontend service to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/ww-sre-demo/frontend-image:latest']
+
+  # Push the Docker image for the backend service to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/ww-sre-demo/backend-image:latest']
+
+images:
+  - 'gcr.io/ww-sre-demo/frontend-image:latest'
+  - 'gcr.io/ww-sre-demo/backend-image:latest'
